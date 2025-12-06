@@ -1,7 +1,7 @@
 package edu.io.token;
 
 import edu.io.Board;
-import edu.io.Player;
+import edu.io.player.Player;
 
 public class PlayerToken extends Token {
     private final Board board;
@@ -27,6 +27,21 @@ public class PlayerToken extends Token {
         this.row = startPos.row();
 
         board.placeToken(col, row, this);
+    }
+
+    public PlayerToken(Board board) {
+        super(Label.PLAYER_TOKEN_LABEL);
+        this.board = board;
+
+        Board.Coords startPos = board.getAvailableSquare();
+        this.col = startPos.col();
+        this.row = startPos.row();
+
+        board.placeToken(col, row, this);
+    }
+
+    public void assignPlayer(Player player) {
+        this.player = player;
     }
 
     public Board.Coords pos() {

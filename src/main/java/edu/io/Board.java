@@ -23,7 +23,10 @@ public class Board {
     }
 
     public Token peekToken(int x, int y) {
-        return grid[y][x];
+        if (x < 0 || x >= size || y < 0 || y >= size) {
+            throw new IllegalArgumentException("Coordinates out of bounds");
+        }
+        return grid[x][y];
     }
 
     public void setPlacementStrategy(IPlacementStrategy strategy) {
@@ -47,7 +50,10 @@ public class Board {
     }
 
     public void placeToken(int x, int y, Token token) {
-        grid[y][x] = token;
+        if (x < 0 || x >= size || y < 0 || y >= size) {
+            throw new IllegalArgumentException("Coordinates out of bounds");
+        }
+        grid[x][y] = token;
     }
 
 

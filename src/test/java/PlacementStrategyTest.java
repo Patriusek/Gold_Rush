@@ -1,5 +1,5 @@
 import edu.io.Board;
-import edu.io.Player;
+import edu.io.player.Player;
 import edu.io.placement.IPlacementStrategy;
 import edu.io.placement.LinearPlacementStrategy;
 import edu.io.placement.RandomPlacementStrategy;
@@ -75,14 +75,17 @@ public class PlacementStrategyTest {
     public void testPlayerTokenUsesStrategy() {
         Board board = new Board();
 
+        // Test with linear strategy
         board.setPlacementStrategy(new LinearPlacementStrategy());
         edu.io.token.PlayerToken token1 = new edu.io.token.PlayerToken(player, board);
         assertEquals(0, token1.pos().col());
         assertEquals(0, token1.pos().row());
 
+        // Clean board and test with different strategy
         board.clean();
         board.setPlacementStrategy(new RandomPlacementStrategy());
         edu.io.token.PlayerToken token2 = new edu.io.token.PlayerToken(player, board);
+        // Should be placed somewhere, not necessarily (0,0)
         assertNotNull(token2.pos());
     }
 }

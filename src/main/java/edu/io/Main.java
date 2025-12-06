@@ -6,10 +6,24 @@ public class Main {
     public static void main(String[] args) {
         System.out.println("Gold Rush");
 
-        Board board = new Board();
+        Game game = new Game();
+        Player player = new Player();
+        game.join(player);
+        game.start();
 
-        board.placeToken(1, 2, new PlayerToken(board));
+        PlayerToken playerToken = player.token();
+        System.out.println("\nMoving player to collect gold...");
 
-        board.display();
+        try {
+            playerToken.move(PlayerToken.Move.RIGHT);
+            playerToken.move(PlayerToken.Move.RIGHT);
+            playerToken.move(PlayerToken.Move.DOWN);
+            playerToken.move(PlayerToken.Move.DOWN);
+            playerToken.move(PlayerToken.Move.DOWN);
+        } catch (IllegalArgumentException e) {
+            System.out.println("Move error: " + e.getMessage());
+        }
+
+        System.out.println("Final gold amount: " + player.gold() + " oz");
     }
 }

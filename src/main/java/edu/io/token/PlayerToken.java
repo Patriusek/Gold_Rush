@@ -1,11 +1,13 @@
 package edu.io.token;
 
 import edu.io.Board;
+import edu.io.Player;
 
 public class PlayerToken extends Token {
     private final Board board;
     private int col;
     private int row;
+    private Player player;
 
     public enum Move {
         LEFT,
@@ -15,13 +17,14 @@ public class PlayerToken extends Token {
         NONE
     }
 
-    public PlayerToken(Board board) {
+    public PlayerToken(Player player, Board board) {
         super(Label.PLAYER_TOKEN_LABEL);
-
+        this.player = player;
         this.board = board;
 
-        this.col = 0;
-        this.row = 0;
+        Board.Coords startPos = board.getAvailableSquare();
+        this.col = startPos.col();
+        this.row = startPos.row();
 
         board.placeToken(col, row, this);
     }
@@ -31,7 +34,6 @@ public class PlayerToken extends Token {
     }
 
     public void move(Move move) {
-
         int newCol = col;
         int newRow = row;
 
@@ -58,11 +60,18 @@ public class PlayerToken extends Token {
             throw new IllegalArgumentException("player is outside");
         }
 
+        Token tokenAtNewPosition = board.peekToken(newCol, newRow);
+
+        if (player != null) {
+            player.interactWithToken(tokenAtNewPosition);
+        }
+
         board.placeToken(col, row, new EmptyToken());
 
         col = newCol;
         row = newRow;
 
         board.placeToken(col, row, this);
+        board.display();
     }
 }

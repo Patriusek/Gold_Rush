@@ -4,7 +4,6 @@ import edu.io.token.EmptyToken;
 import edu.io.token.Token;
 
 public class Board {
-
     public static record Coords(int col, int row) { }
 
     public final int size = 10;
@@ -33,6 +32,17 @@ public class Board {
 
     public void placeToken(int x, int y, Token token) {
         grid[y][x] = token;
+    }
+
+    public Coords getAvailableSquare() {
+        for (int row = 0; row < size; row++) {
+            for (int col = 0; col < size; col++) {
+                if (grid[row][col] instanceof edu.io.token.EmptyToken) {
+                    return new Coords(col, row);
+                }
+            }
+        }
+        throw new IllegalStateException("Board is full!");
     }
 
     public void display() {

@@ -1,5 +1,7 @@
 package edu.io;
 
+import edu.io.placement.IPlacementStrategy;
+import edu.io.placement.LinearPlacementStrategy;
 import edu.io.token.EmptyToken;
 import edu.io.token.Token;
 
@@ -8,9 +10,11 @@ public class Board {
 
     public final int size = 10;
     private Token[][] grid;
+    private IPlacementStrategy placementStrategy;
 
     public Board() {
         grid = new Token[size][size];
+        this.placementStrategy = new LinearPlacementStrategy();
         clean();
     }
 
@@ -20,6 +24,18 @@ public class Board {
 
     public Token peekToken(int x, int y) {
         return grid[y][x];
+    }
+
+    public void setPlacementStrategy(IPlacementStrategy strategy) {
+        this.placementStrategy = strategy;
+    }
+
+    public IPlacementStrategy getPlacementStrategy() {
+        return this.placementStrategy;
+    }
+
+    public Coords getAvailableSquare() {
+        return placementStrategy.getAvailableSquare(this);
     }
 
     public void clean() {
@@ -34,16 +50,6 @@ public class Board {
         grid[y][x] = token;
     }
 
-    public Coords getAvailableSquare() {
-        for (int row = 0; row < size; row++) {
-            for (int col = 0; col < size; col++) {
-                if (grid[row][col] instanceof edu.io.token.EmptyToken) {
-                    return new Coords(col, row);
-                }
-            }
-        }
-        throw new IllegalStateException("Board is full!");
-    }
 
     public void display() {
         for (int row = 0; row < size; row++) {

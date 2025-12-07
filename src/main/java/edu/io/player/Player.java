@@ -41,11 +41,17 @@ public class Player {
     public void interactWithToken(Token token) {
         switch (token) {
             case GoldToken goldToken -> collectGold(goldToken);
-            case PickaxeToken pickaxeToken -> acquirePickaxe(pickaxeToken);
+            case PickaxeToken pickaxeToken -> acquireTool(pickaxeToken);
+            case SluiceboxToken sluiceboxToken -> acquireTool(sluiceboxToken);
             case AnvilToken anvilToken -> repairTool();
             default -> {
             }
         }
+    }
+
+    private void acquireTool(Tool tool) {
+        shed.add(tool);
+        this.tool = tool;
     }
 
     private void collectGold(GoldToken goldToken) {
@@ -54,6 +60,8 @@ public class Player {
 
         if (currentTool instanceof PickaxeToken pickaxe) {
             usePickaxeOnGold(pickaxe, goldToken, amount);
+        } else if (currentTool instanceof SluiceboxToken sluicebox) {
+            useSluiceboxOnGold(sluicebox, goldToken, amount);
         } else {
             gainGold(amount);
         }
@@ -66,9 +74,11 @@ public class Player {
                 .ifIdle(() -> gainGold(baseAmount));
     }
 
-    private void acquirePickaxe(PickaxeToken pickaxeToken) {
-        shed.add(pickaxeToken);
-        this.tool = pickaxeToken;
+    private void useSluiceboxOnGold(SluiceboxToken sluicebox, GoldToken goldToken, double baseAmount) {
+        sluicebox.useWith(goldToken)
+                .ifWorking(() -> gainGold(baseAmount * sluicebox.gainFactor()))
+                .ifBroken(() -> gainGold(baseAmount))
+                .ifIdle(() -> gainGold(baseAmount));
     }
 
     private void repairTool() {

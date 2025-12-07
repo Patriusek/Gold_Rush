@@ -5,6 +5,8 @@ import edu.io.placement.LinearPlacementStrategy;
 import edu.io.token.EmptyToken;
 import edu.io.token.Token;
 
+import java.io.IOException;
+
 public class Board {
     public static record Coords(int col, int row) { }
 
@@ -65,4 +67,5 @@ public class Board {
             System.out.println();
         }
     }
+
 }

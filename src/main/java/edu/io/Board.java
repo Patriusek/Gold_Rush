@@ -5,10 +5,8 @@ import edu.io.placement.LinearPlacementStrategy;
 import edu.io.token.EmptyToken;
 import edu.io.token.Token;
 
-import java.io.IOException;
-
 public class Board {
-    public static record Coords(int col, int row) { }
+    public record Coords(int col, int row) { }
 
     public final int size = 10;
     private Token[][] grid;
@@ -18,17 +16,6 @@ public class Board {
         grid = new Token[size][size];
         this.placementStrategy = new LinearPlacementStrategy();
         clean();
-    }
-
-    public int size() {
-        return size;
-    }
-
-    public Token peekToken(int x, int y) {
-        if (x < 0 || x >= size || y < 0 || y >= size) {
-            throw new IllegalArgumentException("Coordinates out of bounds");
-        }
-        return grid[x][y];
     }
 
     public void setPlacementStrategy(IPlacementStrategy strategy) {
@@ -41,6 +28,10 @@ public class Board {
 
     public Coords getAvailableSquare() {
         return placementStrategy.getAvailableSquare(this);
+    }
+
+    public int size() {
+        return size;
     }
 
     public void clean() {
@@ -58,6 +49,12 @@ public class Board {
         grid[x][y] = token;
     }
 
+    public Token peekToken(int x, int y) {
+        if (x < 0 || x >= size || y < 0 || y >= size) {
+            throw new IllegalArgumentException("Coordinates out of bounds");
+        }
+        return grid[x][y];
+    }
 
     public void display() {
         for (int row = 0; row < size; row++) {

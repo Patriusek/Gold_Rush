@@ -10,28 +10,27 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class PlacementStrategyTest {
     Player player;
+    Board board;
 
     @BeforeEach
     void setUp() {
         player = new Player();
+        board = new Board();
     }
 
     @Test
-    public void testDefaultStrategyIsLinear() {
-        Board board = new Board();
-        assertTrue(board.getPlacementStrategy() instanceof LinearPlacementStrategy);
+    public void default_strategy_check_is_linear() {
+        assertInstanceOf(LinearPlacementStrategy.class, board.getPlacementStrategy());
     }
 
     @Test
-    public void testSetRandomStrategy() {
-        Board board = new Board();
+    public void set_random_strategy_should_be_random() {
         board.setPlacementStrategy(new RandomPlacementStrategy());
-        assertTrue(board.getPlacementStrategy() instanceof RandomPlacementStrategy);
+        assertInstanceOf(RandomPlacementStrategy.class, board.getPlacementStrategy());
     }
 
     @Test
-    public void testLinearStrategyFindsEmptySquare() {
-        Board board = new Board();
+    public void linear_strategy_getAvailableSquare_finds_first_empty_square() {
         IPlacementStrategy strategy = new LinearPlacementStrategy();
 
         Board.Coords coords = strategy.getAvailableSquare(board);
@@ -45,8 +44,7 @@ public class PlacementStrategyTest {
     }
 
     @Test
-    public void testRandomStrategyFindsEmptySquare() {
-        Board board = new Board();
+    public void random_strategy_should_find_empty_square() {
         IPlacementStrategy strategy = new RandomPlacementStrategy();
 
         Board.Coords coords = strategy.getAvailableSquare(board);
@@ -56,8 +54,7 @@ public class PlacementStrategyTest {
     }
 
     @Test
-    public void testFullBoardThrowsException() {
-        Board board = new Board();
+    public void linear_strategy_full_board_should_throw_exception() {
         IPlacementStrategy strategy = new LinearPlacementStrategy();
 
         for (int row = 0; row < board.size(); row++) {
@@ -66,26 +63,19 @@ public class PlacementStrategyTest {
             }
         }
 
-        assertThrows(IllegalStateException.class, () -> {
-            strategy.getAvailableSquare(board);
-        });
+        assertThrows(IllegalStateException.class, () -> strategy.getAvailableSquare(board));
     }
 
     @Test
-    public void testPlayerTokenUsesStrategy() {
-        Board board = new Board();
+    public void random_strategy_full_board_should_throw_exception() {
+        IPlacementStrategy strategy = new RandomPlacementStrategy();
 
-        // Test with linear strategy
-        board.setPlacementStrategy(new LinearPlacementStrategy());
-        edu.io.token.PlayerToken token1 = new edu.io.token.PlayerToken(player, board);
-        assertEquals(0, token1.pos().col());
-        assertEquals(0, token1.pos().row());
+        for (int row = 0; row < board.size(); row++) {
+            for (int col = 0; col < board.size(); col++) {
+                board.placeToken(col, row, new edu.io.token.GoldToken());
+            }
+        }
 
-        // Clean board and test with different strategy
-        board.clean();
-        board.setPlacementStrategy(new RandomPlacementStrategy());
-        edu.io.token.PlayerToken token2 = new edu.io.token.PlayerToken(player, board);
-        // Should be placed somewhere, not necessarily (0,0)
-        assertNotNull(token2.pos());
+        assertThrows(IllegalStateException.class, () -> strategy.getAvailableSquare(board));
     }
 }
